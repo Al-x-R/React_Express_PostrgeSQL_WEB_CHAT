@@ -1,5 +1,14 @@
 const { User } = require('../models');
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const config = require('../config/app')
+
+const generateToken = (user) => {
+  delete user.password
+
+  const token = jwt.sign(user, config.appKey, {expiresIn: config.tokenExpiresIn})
+  return {...user, ...{ token }}
+}
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -10,15 +19,15 @@ exports.login = async (req, res) => {
     });
 
     if (userInstance && bcrypt.compareSync(password, userInstance.password)) {
-      return res.status(200).send( userInstance )
+      const userWithToken = generateToken(userInstance.get({raw: true}))
+      return res.status(200).send( userWithToken )
     }
 
     return res.status(404).send({message: 'Incorrect password or email'})
 
   } catch (e) {
-
+    return res.status(500).json({message: e.message})
   }
-  // return res.send([email, password]);
 };
 
 exports.register = async (req, res) => {
