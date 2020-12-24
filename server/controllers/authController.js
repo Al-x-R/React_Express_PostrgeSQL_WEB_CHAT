@@ -38,6 +38,6 @@ exports.register = async (req, res) => {
 
     return res.status(201).send( userWithToken )
   } catch (e) {
-    return res.status(500).json({message: 'User with this mail already exists'})
+    return res.status(409).json({message: 'User with this mail already exists'})
   }
 };
