@@ -1,28 +1,33 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import AuthService from '../../services/authService'
 import loginImage from '../../assets/images/login.svg';
 import './Auth.scss';
 
-const Login = () => {
+import { useDispatch } from 'react-redux';
+import { login } from '../../store/actions/auth';
+
+// props.history
+const Login = ({ history }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const dispatch = useDispatch();
+
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    dispatch(login({ email, password }, history));
+    // AuthService.login({ email, password }).then(res => console.log(res));
+    /* axios.post(`http://localhost:3002/login`, {email, password})
+       .then(res => {
+         console.log('res => ', res)
+       })
+       .catch(err => {
+         console.log('err => ', err)
+       })*/
 
-    AuthService.login({email, password}).then(res => console.log(res))
-   /* axios.post(`http://localhost:3002/login`, {email, password})
-      .then(res => {
-        console.log('res => ', res)
-      })
-      .catch(err => {
-        console.log('err => ', err)
-      })*/
+    console.log({ email, password });
+  };
 
-    console.log({email, password})
-  }
-  
   return (
     <div id='auth-container'>
       <div id='auth-card'>
