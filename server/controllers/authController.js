@@ -20,6 +20,8 @@ exports.login = async (req, res) => {
 
     if (userInstance && bcrypt.compareSync(password, userInstance.password)) {
       const userWithToken = generateToken(userInstance.get({raw: true}))
+      userWithToken.avatar = userInstance.avatar
+
       return res.status(200).send( userWithToken )
     }
 
