@@ -16,14 +16,6 @@ const Login = ({ history }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(login({ email, password }, history));
-    // AuthService.login({ email, password }).then(res => console.log(res));
-    /* axios.post(`http://localhost:3002/login`, {email, password})
-       .then(res => {
-         console.log('res => ', res)
-       })
-       .catch(err => {
-         console.log('err => ', err)
-       })*/
 
     console.log({ email, password });
   };
