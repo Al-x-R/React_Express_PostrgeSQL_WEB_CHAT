@@ -11,6 +11,26 @@ const Navbar = () => {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
 
+  const [firstName, setFirstName] = useState(user.firstName);
+  const [lastName, setLastName] = useState(user.lastName);
+  const [email, setEmail] = useState(user.email);
+  const [gender, setGender] = useState(user.gender);
+  const [password, setPassword] = useState('');
+  const [avatar, setAvatar] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const form = { firstName, lastName, gender, email, password, avatar };
+    const formData = new FormData();
+
+    for (const key in form) {
+      formData.append(key, form[key]);
+    }
+
+    // dispatch... go to the backend coding
+  };
+
   return (
     <div id='navbar'>
       <h2>Chat.io</h2>
@@ -30,13 +50,60 @@ const Navbar = () => {
           showProfileModal &&
           <Modal click={() => setShowProfileModal(false)}>
             <Fragment key='header'>
-              <p>modal header</p>
+              <h3 className='m-0'>Update profile</h3>
             </Fragment>
             <Fragment key='body'>
-              Modal body
+              <form action="">
+                <div className='input-field'>
+                  <input value={firstName}
+                         onChange={e => setFirstName(e.target.value)}
+                         type="text"
+                         required="required"
+                         placeholder='First name'/>
+                </div>
+                <div className='input-field'>
+                  <input value={lastName}
+                         onChange={e => setLastName(e.target.value)}
+                         type="text"
+                         required="required"
+                         placeholder='Last name'/>
+                </div>
+                <div className='input-field'>
+                  <input value={email}
+                         onChange={e => setEmail(e.target.value)}
+                         type="email"
+                         required="required"
+                         placeholder='Email'/>
+                </div>
+                <div className='input-field'>
+                  <select onChange={e => setGender(e.target.value)}
+                          value={gender}
+                          required="required"
+                          name="gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+                <div className='input-field'>
+                  <input value={avatar}
+                         onChange={e => setAvatar(e.target.files[0])}
+                         type="file"
+                  />
+                </div>
+                <div className='input-field'>
+                  <input value={password}
+                         onChange={e => setPassword(e.target.value)}
+                         type="text"
+                         required="required"
+                         placeholder='Password'/>
+                </div>
+              </form>
             </Fragment>
             <Fragment key='footer'>
-              Modal footer
+              <button onClick={handleSubmit}
+                      className='btn-success'>
+                UPDATE
+              </button>
             </Fragment>
           </Modal>
         }
