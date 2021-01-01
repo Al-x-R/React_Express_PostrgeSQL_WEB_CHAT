@@ -1,5 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { updateProfile } from '../../../../store/actions/auth';
 import { logout } from '../../../../store/actions/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Navbar.scss';
@@ -8,6 +9,7 @@ import Modal from '../../../Modal/Modal';
 const Navbar = () => {
   const user = useSelector(state => state.authReducer.user);
   const dispatch = useDispatch();
+
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
 
@@ -21,14 +23,18 @@ const Navbar = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const form = { firstName, lastName, gender, email, password, avatar };
+    const form = { firstName, lastName, gender, email, avatar };
+    if (password.length > 0) {
+      form.password = password
+    }
+
     const formData = new FormData();
 
     for (const key in form) {
       formData.append(key, form[key]);
     }
 
-    // dispatch... go to the backend coding
+    dispatch(updateProfile(formData)).then(() => setShowProfileModal(false))
   };
 
   return (
@@ -85,8 +91,7 @@ const Navbar = () => {
                   </select>
                 </div>
                 <div className='input-field'>
-                  <input value={avatar}
-                         onChange={e => setAvatar(e.target.files[0])}
+                  <input onChange={e => setAvatar(e.target.files[0])}
                          type="file"
                   />
                 </div>

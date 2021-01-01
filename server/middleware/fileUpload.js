@@ -25,7 +25,7 @@ exports.userFile = ((req, res, next) => {
     if (passed) {
       return cb(null, true);
     }
-    cb(null, false);
+    return cb(null, false);
   };
 
   const storage = multer.diskStorage({
