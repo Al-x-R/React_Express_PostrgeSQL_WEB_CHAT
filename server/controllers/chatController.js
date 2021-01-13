@@ -95,29 +95,62 @@ exports.create = async (req, res) => {
     await t.commit();
 
     const newChat = await Chat.findOne({
-        where: {
-            id: chat.id
-        },
-        include: [
-            {
-                model: User,
-                where: {
-                    [Op.not]: {
-                        id: req.user.id
-                    }
-                }
+      where: {
+        id: chat.id,
+      },
+      include: [
+        {
+          model: User,
+          where: {
+            [Op.not]: {
+              id: req.user.id,
             },
-            {
-                model: Message
-            }
-        ]
-    })
+          },
+        },
+        {
+          model: Message,
+        },
+      ],
+    });
 
-    return res.send(newChat)
+    return res.send(newChat);
 
   } catch (e) {
-    await t.rollback()
-    return res.status(500).json({ status: 'Error', message: e.message })
+    await t.rollback();
+    return res.status(500).json({ status: 'Error', message: e.message });
+  }
+};
+
+exports.messages = async (req, res) => {
+  const limit = 10;
+  const page = req.query.page || 1;
+  const offset = page > 1 ? page * limit : 0;
+
+  const messages = await Message.findAndCountAll({
+    where: {
+      chatId: req.query.id,
+    },
+    include: [
+      {
+        model: User,
+      },
+    ],
+    limit,
+    offset,
+    order: [['id', 'DESC']],
+  });
+
+  const totalPage = Math.ceil(messages.count / limit);
+
+  if (page > totalPage) return res.json({ data: { messages: [] } });
+
+  const result = {
+    messages: messages.rows,
+    pagination: {
+      page,
+      totalPage
+    }
   }
 
+  return res.json(result)
 };
