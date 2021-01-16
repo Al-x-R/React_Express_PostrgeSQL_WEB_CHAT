@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
+import ChatHeader from '../ChatHeader/ChatHeader';
 
 import './Messenger.scss';
 
@@ -16,8 +17,7 @@ const Messenger = () => {
       {
         activeChat()
           ? <div id='messenger-wrap'>
-            {/*<ChatHeader chat={chat} />*/}
-            <div>header</div>
+            <ChatHeader chat={chat} />
             <hr />
             <div>message box</div>
             <div>input </div>
