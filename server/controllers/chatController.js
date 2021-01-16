@@ -130,6 +130,7 @@ exports.messages = async (req, res) => {
     where: {
       chatId: req.query.id,
     },
+    // user name for a message
     include: [
       {
         model: User,

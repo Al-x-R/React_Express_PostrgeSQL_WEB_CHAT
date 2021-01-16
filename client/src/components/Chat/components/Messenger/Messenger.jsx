@@ -1,8 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
 import ChatHeader from '../ChatHeader/ChatHeader';
+import MessageBox from '../MessageBox/MessageBox';
 
 import './Messenger.scss';
+
 
 const Messenger = () => {
 
@@ -19,9 +21,7 @@ const Messenger = () => {
           ? <div id='messenger-wrap'>
             <ChatHeader chat={chat} />
             <hr />
-            <div>message box</div>
-            <div>input </div>
-            {/*<MessageBox chat={chat} />*/}
+            <MessageBox chat={chat} />
             {/*<MessageInput chat={chat} />*/}
           </div>
           : <p>No active chat</p>
