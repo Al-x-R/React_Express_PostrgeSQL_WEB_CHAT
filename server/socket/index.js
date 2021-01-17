@@ -9,6 +9,7 @@ const SocketServer = (server) => {
 
     socket.on('join', async (user) => {
       console.log('New user joined', user.firstName);
+      io.to(socket.id).emit('typing', 'User typing...')
     });
   });
 
