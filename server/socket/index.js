@@ -30,7 +30,7 @@ const SocketServer = (server) => {
 
       const chatters = await getChatters(user.id); // query
 
-      console.log(chatters)
+      console.log(chatters);
 
       // notify his friends that user is now online
       for (let i = 0; i < chatters.length; i++) {
@@ -57,6 +57,44 @@ const SocketServer = (server) => {
       });
     }); // join socket
 
+    socket.on('disconnect', async () => {
+
+      if (userSockets.has(socket.id)) {
+
+        const user = users.get(userSockets.get(socket.id));
+
+        if (user.sockets.length > 1) {
+
+          user.sockets = user.sockets.filter(sock => {
+            if (sock !== socket.id) return true;
+
+            userSockets.delete(sock);
+            return false;
+          });
+
+          users.set(user.id, user);
+
+        } else {
+
+          const chatters = await getChatters(user.id);
+
+          for (let i = 0; i < chatters.length; i++) {
+            if (users.has(chatters[i])) {
+              users.get(chatters[i]).sockets.forEach(socket => {
+                try {
+                  io.to(socket).emit('offline', user);
+                } catch (e) {
+                }
+              });
+            }
+          }
+
+          userSockets.delete(socket.id);
+          users.delete(user.id);
+        }
+      }
+    });
+
   }); // connection
 
 };
@@ -75,14 +113,14 @@ const getChatters = async (userId) => {
             )
         ) as cjoin on cjoin.id = "cu"."chatId"
         where "cu"."userId" != ${parseInt(userId)}
-    `)
+    `);
 
-    return results.length > 0 ? results.map(el => el.userId) : []
+    return results.length > 0 ? results.map(el => el.userId) : [];
 
   } catch (e) {
     console.log(e);
-    return []
+    return [];
   }
-}
+};
 
 module.exports = SocketServer;
